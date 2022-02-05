@@ -8,7 +8,7 @@ function FeedbackItem({feedback, handleDelete}) {
       <button onClick={() => handleDelete(feedback.id)} className="close">
         <FaTrash color="black"/>
       </button>
-      <div className="text-display">{feedback.text}</div>      
+      <div className="text-display">{feedback.review}</div>      
     </Card>
   );
 }
