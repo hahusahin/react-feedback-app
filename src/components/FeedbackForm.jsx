@@ -1,18 +1,30 @@
-import { useState } from 'react';
-import RatingSelector from './RatingSelector';
-import Button from './shared/Button';
-import Card from './shared/Card';
+import { useState, useContext, useEffect } from 'react'
+import FeedbackContext from '../context/FeedbackContext'
+import RatingSelector from './RatingSelector'
+import Button from './shared/Button'
+import Card from './shared/Card'
 
-function FeedbackForm({handleAdd}) {
+function FeedbackForm() {
   
   const [review, setReview] = useState("")
   const [btnDisabled, setBtnDisabled] = useState(true)
   const [message, setMessage] = useState("")
   const [rating, setRating] = useState(5)
 
+  const {addFeedback, editingFeedback, updateFeedback} = useContext(FeedbackContext)
+
+  // if editingFeedback is changed (a feedback's edit button is clicked) make these changes:
+  useEffect(() => {
+    if(editingFeedback.isEdit){ 
+      setReview(editingFeedback.feedback.review)
+      setRating(editingFeedback.feedback.rating)
+      setBtnDisabled(false)
+    }
+  }, [editingFeedback]);
+
   const handleReviewChange = (event) => {
 
-    const currentText = event.target.value;
+    const currentText = event.target.value
     setReview(currentText)
 
     if (currentText === ""){ // nothing has typed yet
@@ -31,10 +43,17 @@ function FeedbackForm({handleAdd}) {
     event.preventDefault()
 
     const newFeedback = { review, rating }
-    handleAdd(newFeedback)
+    
+    if(editingFeedback.isEdit){
+      updateFeedback(editingFeedback.feedback.id, newFeedback)
+    } else {
+      addFeedback(newFeedback)
+    }    
 
     setReview("")
+    setBtnDisabled(true)
   }
+  
   
   return (
     <Card>
@@ -55,4 +74,4 @@ function FeedbackForm({handleAdd}) {
   )
 }
 
-export default FeedbackForm;
+export default FeedbackForm
